@@ -35,7 +35,7 @@ class Scanner:
         with open(self.tokens_output_path, 'w', encoding='utf-8') as f:
             for line in sorted(self.tokens_by_line.keys()):
                 token_strs = ' '.join([f'({ttype}, {tval})' for (ttype, tval) in self.tokens_by_line[line]])
-                f.write(f'{line}.\t{token_strs}\n')
+                f.write(f'{line}.	{token_strs}\n')
 
     def write_errors(self):
         with open(self.errors_output_path, 'w', encoding='utf-8') as f:
@@ -43,13 +43,13 @@ class Scanner:
                 f.write('There is no lexical error.\n')
             else:
                 for line in sorted(self.errors_by_line.keys()):
-                    for err in self.errors_by_line[line]:
-                        f.write(f'{line}.\t{err}\n')
+                    errs = ' '.join(self.errors_by_line[line])
+                    f.write(f'{line}.	{errs}\n')
 
     def write_symbol_table(self):
         with open(self.symbol_table_output_path, 'w', encoding='utf-8') as f:
             for idx, lexeme in enumerate(self.symbol_table.keys(), start=1):
-                f.write(f'{idx}.\t{lexeme}\n')
+                f.write(f'{idx}.	{lexeme}\n')
 
     def scan(self):
         lines = self.read_file()
@@ -126,18 +126,24 @@ class Scanner:
                 self.position += 1
             num_end = self.position
             if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
-                # Capture only the number and first alpha character as invalid number
                 self.position += 1
                 return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
 
-        # ID or Keyword
+        # ID or Keyword (with lookahead validation)
         if ch.isalpha():
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
                 self.position += 1
             lexeme = self.current_line[start:self.position]
+
+            # check if lexeme is followed by valid boundary (space, symbol, etc)
             if lexeme in self.keywords:
+                if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
+                    # this is like else$ → it's a bad token
+                    while self.position < len(self.current_line) and self.current_line[self.position].isalnum() == False and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
+                        self.position += 1
+                    return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
                 return ('KEYWORD', lexeme)
             else:
                 if lexeme not in self.symbol_table:

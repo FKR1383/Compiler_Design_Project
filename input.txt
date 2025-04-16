@@ -1,16 +1,21 @@
-vod min(voi$$){
-	if (arr[efg] == TT%^&*){
-			b = b + 1;}
-		if(arr[efg] === 3)
-			b = b + 2;
-			return;
-		else (arr[ef%g] // arr)
-		{
-			x = 5;
-			b = u * 123;
-			break;}
-		else
-			b = b - 1;
-	}
-	return;
-}129
+int f(int a){
+return a *# a * a;
+}
+void main(void){
+int a;
+int b;
+a = 8/;
+if (b < 5) {
+a = f(a);
+}
+else{
+a = 4;
+}
+
+while (a < 10){
+a = a + 1;
+b = a +b;
+}
+
+break;
+}

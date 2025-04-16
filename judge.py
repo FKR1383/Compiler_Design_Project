@@ -18,12 +18,8 @@ def read_file_lines(path):
         return [line.rstrip() for line in f.readlines()]
 
 def clean_symbol_table(lines):
-    cleaned = []
-    for line in lines:
-        if "\t\t" in line:
-            parts = line.split("\t\t", 1)
-            cleaned.append(parts[1])
-    return sorted(cleaned)
+    return sorted(line.split('\t', 1)[1] if '\t' in line else line for line in lines)
+
 
 def compare_files(file1, file2, is_symbol_table=False):
     lines1 = read_file_lines(file1)
