@@ -17,7 +17,6 @@ class Scanner:
         self.keywords = {'if', 'else', 'void', 'int', 'while', 'break', 'return'}
         self.symbols = {';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '/', '=', '<'}
 
-        # Add all keywords to the symbol table initially
         for kw in sorted(self.keywords):
             self.symbol_table[kw] = self.symbol_table_index
             self.symbol_table_index += 1
@@ -70,8 +69,14 @@ class Scanner:
                         comment_buffer += self.current_line[self.position]
                         self.position += 1
                         continue
+
                 token = self.get_next_token()
                 if token:
+                    if token == ('COMMENT_START', '/*'):
+                        while_comment = True
+                        comment_start_line = lineno
+                        comment_buffer = '/*'  # 🟢 مهم: شروع کامنت هم اضافه بشه
+                        continue
                     ttype, tval = token
                     if ttype == 'ERROR':
                         self.errors_by_line.setdefault(lineno, []).append(f'({tval[0]}, {tval[1]})')
@@ -95,26 +100,20 @@ class Scanner:
             self.position += 1
             return ('WHITESPACE', ch)
 
-        # Comments
+        # Start of comment
         if self.current_line[self.position:self.position+2] == '/*':
-            end_pos = self.current_line.find('*/', self.position+2)
-            if end_pos != -1:
-                self.position = end_pos + 2
-                return ('COMMENT', '/*...*/')
-            else:
-                self.position += 2
-                return ('ERROR', ('/*', 'Unclosed comment'))
+            self.position += 2
+            return ('COMMENT_START', '/*')
 
+        # End of comment without a start
         if self.current_line[self.position:self.position+2] == '*/':
             self.position += 2
             return ('ERROR', ('*/', 'Unmatched comment'))
 
-        # Two-char symbol: ==
         if self.current_line[self.position:self.position+2] == '==':
             self.position += 2
             return ('SYMBOL', '==')
 
-        # SYMBOL with invalid follow-up (e.g., *#)
         if ch in self.symbols:
             if self.position + 1 < len(self.current_line):
                 next_ch = self.current_line[self.position + 1]
@@ -125,7 +124,6 @@ class Scanner:
             self.position += 1
             return ('SYMBOL', ch)
 
-        # NUM
         if ch.isdigit():
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isdigit():
@@ -136,7 +134,6 @@ class Scanner:
                 return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
 
-        # ID or Keyword (with lookahead validation)
         if ch.isalpha():
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
@@ -155,7 +152,6 @@ class Scanner:
                     self.symbol_table_index += 1
                 return ('ID', lexeme)
 
-        # Invalid input
         self.position += 1
         return ('ERROR', (ch, 'Invalid input'))
 
