@@ -1,10 +1,3 @@
-# compiler.py
-# Full Name: Farzam Koohi-Ronaghi
-# Student ID: [Insert your student number here]
-# References: Kenneth C. Louden, Compiler Construction: Principles and Practice
-
-import re
-
 class Scanner:
     def __init__(self, input_path='input.txt'):
         self.input_path = input_path
@@ -42,7 +35,7 @@ class Scanner:
         with open(self.tokens_output_path, 'w', encoding='utf-8') as f:
             for line in sorted(self.tokens_by_line.keys()):
                 token_strs = ' '.join([f'({ttype}, {tval})' for (ttype, tval) in self.tokens_by_line[line]])
-                f.write(f'{line} {token_strs}\n')
+                f.write(f'{line}.\t{token_strs}\n')
 
     def write_errors(self):
         with open(self.errors_output_path, 'w', encoding='utf-8') as f:
@@ -51,12 +44,12 @@ class Scanner:
             else:
                 for line in sorted(self.errors_by_line.keys()):
                     for err in self.errors_by_line[line]:
-                        f.write(f'{line} {err}\n')
+                        f.write(f'{line}.\t{err}\n')
 
     def write_symbol_table(self):
         with open(self.symbol_table_output_path, 'w', encoding='utf-8') as f:
             for idx, lexeme in enumerate(self.symbol_table.keys(), start=1):
-                f.write(f'{idx}.	{lexeme}\n')
+                f.write(f'{idx}.\t{lexeme}\n')
 
     def scan(self):
         lines = self.read_file()
@@ -133,11 +126,9 @@ class Scanner:
                 self.position += 1
             num_end = self.position
             if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
-                error_start = self.position
-                while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
-                    self.position += 1
-                # report only the number part and the first alpha character as invalid number
-                return ('ERROR', (self.current_line[start:self.position - (self.position - error_start - 1)], 'Invalid number'))
+                # Capture only the number and first alpha character as invalid number
+                self.position += 1
+                return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
 
         # ID or Keyword
