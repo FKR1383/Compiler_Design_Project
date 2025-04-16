@@ -1,1 +1,3 @@
-2.	(#, Invalid input)
+2.	(*/, Unmatched comment)
+16.	(/*, Unclosed comment)
+19.	(/*, Unclosed comment)

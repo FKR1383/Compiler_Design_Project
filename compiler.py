@@ -114,8 +114,14 @@ class Scanner:
             self.position += 2
             return ('SYMBOL', '==')
 
-        # SYMBOL
+        # SYMBOL with invalid follow-up (e.g., *#)
         if ch in self.symbols:
+            if self.position + 1 < len(self.current_line):
+                next_ch = self.current_line[self.position + 1]
+                if next_ch not in self.symbols and not next_ch.isspace() and not next_ch.isalnum():
+                    error_start = self.position
+                    self.position += 2
+                    return ('ERROR', (self.current_line[error_start:self.position], 'Invalid input'))
             self.position += 1
             return ('SYMBOL', ch)
 
@@ -137,11 +143,9 @@ class Scanner:
                 self.position += 1
             lexeme = self.current_line[start:self.position]
 
-            # check if lexeme is followed by valid boundary (space, symbol, etc)
             if lexeme in self.keywords:
                 if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                    # this is like else$ → it's a bad token
-                    while self.position < len(self.current_line) and self.current_line[self.position].isalnum() == False and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
+                    while self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
                         self.position += 1
                     return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
                 return ('KEYWORD', lexeme)
