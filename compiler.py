@@ -42,7 +42,7 @@ class Scanner:
         with open(self.tokens_output_path, 'w', encoding='utf-8') as f:
             for line in sorted(self.tokens_by_line.keys()):
                 token_strs = ' '.join([f'({ttype}, {tval})' for (ttype, tval) in self.tokens_by_line[line]])
-                f.write(f'{line}. {token_strs}\n')
+                f.write(f'{line} {token_strs}\n')
 
     def write_errors(self):
         with open(self.errors_output_path, 'w', encoding='utf-8') as f:
@@ -131,12 +131,14 @@ class Scanner:
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isdigit():
                 self.position += 1
+            num_end = self.position
             if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
                 error_start = self.position
                 while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
                     self.position += 1
-                return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
-            return ('NUM', self.current_line[start:self.position])
+                # report only the number part and the first alpha character as invalid number
+                return ('ERROR', (self.current_line[start:self.position - (self.position - error_start - 1)], 'Invalid number'))
+            return ('NUM', self.current_line[start:num_end])
 
         # ID or Keyword
         if ch.isalpha():
