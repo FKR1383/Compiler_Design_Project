@@ -1,16 +1,22 @@
-vod min(voi$$){
-	if (arr[efg] == TT%^&*){
-			b = b + 1;}
-		if(arr[efg] === 3)
-			b = b + 2;
-			return;
-		else (arr[ef%g] // arr)
-		{
-			x = 5;
-			b = u * 123;
-			break;}
-		else
-			b = b - 1;
-	}
-	return;
-}129
+int f(int a) {
+    void g(int b) {
+        output(b);
+        ff(b - 1gh);
+    }
+    if (a == 1) {
+        out$put£(a);
+        return 0;
+    } else {
+        g(a);
+    }
+
+
+
+}
+
+
+void main(void) {
+int a = 9;
+    f(a);
+	f(aA$%);/*a$$a&&a##*/;;;;
+}

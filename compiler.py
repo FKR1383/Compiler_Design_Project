@@ -75,7 +75,7 @@ class Scanner:
                     if token == ('COMMENT_START', '/*'):
                         while_comment = True
                         comment_start_line = lineno
-                        comment_buffer = '/*'  # 🟢 مهم: شروع کامنت هم اضافه بشه
+                        comment_buffer = '/*'
                         continue
                     ttype, tval = token
                     if ttype == 'ERROR':
@@ -100,12 +100,10 @@ class Scanner:
             self.position += 1
             return ('WHITESPACE', ch)
 
-        # Start of comment
         if self.current_line[self.position:self.position+2] == '/*':
             self.position += 2
             return ('COMMENT_START', '/*')
 
-        # End of comment without a start
         if self.current_line[self.position:self.position+2] == '*/':
             self.position += 2
             return ('ERROR', ('*/', 'Unmatched comment'))
@@ -138,13 +136,15 @@ class Scanner:
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
                 self.position += 1
-            lexeme = self.current_line[start:self.position]
 
+            # اگر کاراکتر بعدی هنوز ادامه identifier باشه ولی خراب باشه
+            if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
+                while self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
+                    self.position += 1
+                return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
+
+            lexeme = self.current_line[start:self.position]
             if lexeme in self.keywords:
-                if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                    while self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                        self.position += 1
-                    return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
                 return ('KEYWORD', lexeme)
             else:
                 if lexeme not in self.symbol_table:
