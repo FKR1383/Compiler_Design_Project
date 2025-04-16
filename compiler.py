@@ -24,6 +24,11 @@ class Scanner:
         self.keywords = {'if', 'else', 'void', 'int', 'while', 'break', 'return'}
         self.symbols = {';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '/', '=', '<'}
 
+        # Add all keywords to the symbol table initially
+        for kw in sorted(self.keywords):
+            self.symbol_table[kw] = self.symbol_table_index
+            self.symbol_table_index += 1
+
     def read_file(self):
         with open(self.input_path, encoding='utf-8') as file:
             return file.readlines()
@@ -37,7 +42,7 @@ class Scanner:
         with open(self.tokens_output_path, 'w', encoding='utf-8') as f:
             for line in sorted(self.tokens_by_line.keys()):
                 token_strs = ' '.join([f'({ttype}, {tval})' for (ttype, tval) in self.tokens_by_line[line]])
-                f.write(f'{line} {token_strs}\n')
+                f.write(f'{line}. {token_strs}\n')
 
     def write_errors(self):
         with open(self.errors_output_path, 'w', encoding='utf-8') as f:
@@ -140,9 +145,6 @@ class Scanner:
                 self.position += 1
             lexeme = self.current_line[start:self.position]
             if lexeme in self.keywords:
-                if lexeme not in self.symbol_table:
-                    self.symbol_table[lexeme] = self.symbol_table_index
-                    self.symbol_table_index += 1
                 return ('KEYWORD', lexeme)
             else:
                 if lexeme not in self.symbol_table:
