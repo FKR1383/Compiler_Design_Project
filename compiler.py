@@ -34,7 +34,7 @@ class Scanner:
         with open(self.tokens_output_path, 'w', encoding='utf-8') as f:
             for line in sorted(self.tokens_by_line.keys()):
                 token_strs = ' '.join([f'({ttype}, {tval})' for (ttype, tval) in self.tokens_by_line[line]])
-                f.write(f'{line}.	{token_strs}\n')
+                f.write(f'{line}.\t{token_strs}\n')
 
     def write_errors(self):
         with open(self.errors_output_path, 'w', encoding='utf-8') as f:
@@ -43,12 +43,12 @@ class Scanner:
             else:
                 for line in sorted(self.errors_by_line.keys()):
                     errs = ' '.join(self.errors_by_line[line])
-                    f.write(f'{line}.	{errs}\n')
+                    f.write(f'{line}.\t{errs}\n')
 
     def write_symbol_table(self):
         with open(self.symbol_table_output_path, 'w', encoding='utf-8') as f:
             for idx, lexeme in enumerate(self.symbol_table.keys(), start=1):
-                f.write(f'{idx}.	{lexeme}\n')
+                f.write(f'{idx}.\t{lexeme}\n')
 
     def scan(self):
         lines = self.read_file()
@@ -96,53 +96,59 @@ class Scanner:
 
         ch = self.current_line[self.position]
 
+        # Whitespace
         if ch.isspace():
             self.position += 1
             return ('WHITESPACE', ch)
 
+        # Comment start
         if self.current_line[self.position:self.position+2] == '/*':
             self.position += 2
             return ('COMMENT_START', '/*')
 
+        # Unmatched comment end
         if self.current_line[self.position:self.position+2] == '*/':
             self.position += 2
             return ('ERROR', ('*/', 'Unmatched comment'))
 
+        # Two-char symbol: ==
         if self.current_line[self.position:self.position+2] == '==':
             self.position += 2
             return ('SYMBOL', '==')
 
+        # Single symbols, with invalid follow-up
         if ch in self.symbols:
-            if self.position + 1 < len(self.current_line):
-                next_ch = self.current_line[self.position + 1]
+            if self.position+1 < len(self.current_line):
+                next_ch = self.current_line[self.position+1]
                 if next_ch not in self.symbols and not next_ch.isspace() and not next_ch.isalnum():
-                    error_start = self.position
+                    error_lex = self.current_line[self.position:self.position+2]
                     self.position += 2
-                    return ('ERROR', (self.current_line[error_start:self.position], 'Invalid input'))
+                    return ('ERROR', (error_lex, 'Invalid input'))
             self.position += 1
             return ('SYMBOL', ch)
 
+        # Number
         if ch.isdigit():
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isdigit():
                 self.position += 1
             num_end = self.position
             if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
+                # consume only first alpha
                 self.position += 1
                 return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
 
+        # Identifier or keyword
         if ch.isalpha():
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
                 self.position += 1
-
-            # اگر کاراکتر بعدی هنوز ادامه identifier باشه ولی خراب باشه
+            # Check for invalid char just after the alnum sequence
             if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                while self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                    self.position += 1
+                # consume only one invalid char
+                self.position += 1
                 return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
-
             lexeme = self.current_line[start:self.position]
             if lexeme in self.keywords:
                 return ('KEYWORD', lexeme)
@@ -152,6 +158,7 @@ class Scanner:
                     self.symbol_table_index += 1
                 return ('ID', lexeme)
 
+        # Any other invalid input
         self.position += 1
         return ('ERROR', (ch, 'Invalid input'))
 
