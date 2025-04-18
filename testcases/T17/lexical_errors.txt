@@ -1,3 +1,0 @@
-1.	(Bye!, Invalid input) (*/, Unmatched comment)
-2.	(a$, Invalid input) (a$, Invalid input)
-3.	(0a, Invalid number)

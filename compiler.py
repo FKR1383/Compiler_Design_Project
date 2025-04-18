@@ -141,10 +141,18 @@ class Scanner:
             while self.position < len(self.current_line) and self.current_line[self.position].isdigit():
                 self.position += 1
             num_end = self.position
-            # If next is letter, consume only one letter and error
-            if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
-                self.position += 1
-                return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
+            invalid = False
+            # Check if there's an invalid character following the number
+            if self.position < len(self.current_line):
+                next_char = self.current_line[self.position]
+                # Check for letters (e.g., 12a)
+                if next_char.isalpha():
+                    self.position += 1
+                    return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
+                # Check for invalid characters (e.g., 12$)
+                elif not (next_char.isspace() or next_char in self.symbols):
+                    self.position += 1
+                    return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
 
         # Identifier or keyword

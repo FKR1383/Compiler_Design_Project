@@ -1,3 +1,0 @@
-10.	(*#, Invalid input) 
-11.	(/$, Invalid input) 
-13.	(/* unte..., Unclosed comment) 

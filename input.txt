@@ -1,7 +1,30 @@
-int a=1b2;
-x=*#5;
-y=/$6;
-z=?3;
-*/
- /* open error haha meow
-still
+
+/* A compact but novel C‑minus test case */
+
+/* Function with chained assignments, nested calls, and unconventional spacing */
+int mix(int a, int b, int c){
+    int result;
+    /* chained assignment */
+    result = a = b = c;
+    /* nested calls in an expression */
+    result = result + mix(a-1, mix(b-1, c-1, 1), 2);
+    /* while loop with missing braces and inline comment */
+    while(a > 0) 
+        a = a - 1; /* decrement a */
+    return result;
+}
+
+void main(void){
+    int i;
+    int A[3];
+    /* initialize with no spaces around = and ; */
+    A[0]=10;A[1]=20;A[2]=30;
+    i= mix( A[ i = 1 ] , A[2], 3 );  /* nested index assignment */
+    /* multiple statements on one line */
+    if(i>50) { i=i-1; } else i = i + 1;
+    /* unclosed comment begins here
+       and never ends
+    tricky(A, i);
+    return;
+}
+

@@ -1,6 +1,0 @@
-1.	(/#, Invalid input) (*/, Unmatched comment)
-2.	(b#, Invalid input)
-4.	(#, Invalid input) (i#, Invalid input)
-6.	(#, Invalid input) (%, Invalid input)
-26.	(*/, Unmatched comment)
-28.	(/*salaa..., Unclosed comment)

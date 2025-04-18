@@ -1,3 +1,0 @@
-9.	(*#, Invalid input) 
-10.	(8x, Invalid number) 
-11.	(*/, Unmatched comment) 
