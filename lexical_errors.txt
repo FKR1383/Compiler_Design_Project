@@ -1,3 +1,4 @@
-1.	(voi$, Invalid input) ($, Invalid input)
-2.	(TT%, Invalid input) (^, Invalid input) (&, Invalid input)
-7.	(ef%, Invalid input)
+5.	(#, Invalid input)
+23.	(void$, Invalid input)
+26.	(f$, Invalid input) (a$, Invalid input)
+35.	(*/, Unmatched comment) (*/, Unmatched comment)

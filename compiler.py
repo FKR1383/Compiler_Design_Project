@@ -1,3 +1,10 @@
+# compiler.py
+# Full Name: Farzam Koohi-Ronaghi
+# Student ID: [Insert your student number here]
+# References: Kenneth C. Louden, Compiler Construction: Principles and Practice
+
+import re
+
 class Scanner:
     def __init__(self, input_path='input.txt'):
         self.input_path = input_path
@@ -14,9 +21,14 @@ class Scanner:
         self.current_line = ''
         self.position = 0
 
+        # Define keywords and symbol sets
         self.keywords = {'if', 'else', 'void', 'int', 'while', 'break', 'return'}
+        # All single-character symbols
         self.symbols = {';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '/', '=', '<'}
+        # Symbols considered operators for invalid following char combination
+        self.operator_symbols = {'+', '-', '*', '/', '=', '<'}
 
+        # Initialize symbol table with keywords
         for kw in sorted(self.keywords):
             self.symbol_table[kw] = self.symbol_table_index
             self.symbol_table_index += 1
@@ -61,6 +73,7 @@ class Scanner:
             self.position = 0
             while self.position < len(self.current_line):
                 if while_comment:
+                    # inside a /* ... */ comment
                     if self.current_line[self.position:self.position+2] == '*/':
                         while_comment = False
                         self.position += 2
@@ -93,7 +106,6 @@ class Scanner:
     def get_next_token(self):
         if self.position >= len(self.current_line):
             return None
-
         ch = self.current_line[self.position]
 
         # Whitespace
@@ -102,28 +114,29 @@ class Scanner:
             return ('WHITESPACE', ch)
 
         # Comment start
-        if self.current_line[self.position:self.position+2] == '/*':
+        if self.current_line.startswith('/*', self.position):
             self.position += 2
             return ('COMMENT_START', '/*')
 
         # Unmatched comment end
-        if self.current_line[self.position:self.position+2] == '*/':
+        if self.current_line.startswith('*/', self.position):
             self.position += 2
             return ('ERROR', ('*/', 'Unmatched comment'))
 
         # Two-char symbol: ==
-        if self.current_line[self.position:self.position+2] == '==':
+        if self.current_line.startswith('==', self.position):
             self.position += 2
             return ('SYMBOL', '==')
 
-        # Single symbols, with invalid follow-up
+        # Single-character symbols
         if ch in self.symbols:
-            if self.position+1 < len(self.current_line):
-                next_ch = self.current_line[self.position+1]
-                if next_ch not in self.symbols and not next_ch.isspace() and not next_ch.isalnum():
-                    error_lex = self.current_line[self.position:self.position+2]
+            # Only operator symbols combine with invalid following char
+            if ch in self.operator_symbols and self.position + 1 < len(self.current_line):
+                nxt = self.current_line[self.position+1]
+                if not (nxt.isspace() or nxt.isalnum() or nxt in self.symbols):
+                    lex = ch + nxt
                     self.position += 2
-                    return ('ERROR', (error_lex, 'Invalid input'))
+                    return ('ERROR', (lex, 'Invalid input'))
             self.position += 1
             return ('SYMBOL', ch)
 
@@ -133,8 +146,8 @@ class Scanner:
             while self.position < len(self.current_line) and self.current_line[self.position].isdigit():
                 self.position += 1
             num_end = self.position
+            # If next is letter, consume only one letter and error
             if self.position < len(self.current_line) and self.current_line[self.position].isalpha():
-                # consume only first alpha
                 self.position += 1
                 return ('ERROR', (self.current_line[start:self.position], 'Invalid number'))
             return ('NUM', self.current_line[start:num_end])
@@ -144,19 +157,19 @@ class Scanner:
             start = self.position
             while self.position < len(self.current_line) and self.current_line[self.position].isalnum():
                 self.position += 1
-            # Check for invalid char just after the alnum sequence
-            if self.position < len(self.current_line) and self.current_line[self.position] not in self.symbols and not self.current_line[self.position].isspace():
-                # consume only one invalid char
-                self.position += 1
-                return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
+            # Check for invalid char just after sequence
+            if self.position < len(self.current_line):
+                nxt = self.current_line[self.position]
+                if not (nxt.isspace() or nxt.isalnum() or nxt in self.symbols):
+                    self.position += 1
+                    return ('ERROR', (self.current_line[start:self.position], 'Invalid input'))
             lexeme = self.current_line[start:self.position]
             if lexeme in self.keywords:
                 return ('KEYWORD', lexeme)
-            else:
-                if lexeme not in self.symbol_table:
-                    self.symbol_table[lexeme] = self.symbol_table_index
-                    self.symbol_table_index += 1
-                return ('ID', lexeme)
+            if lexeme not in self.symbol_table:
+                self.symbol_table[lexeme] = self.symbol_table_index
+                self.symbol_table_index += 1
+            return ('ID', lexeme)
 
         # Any other invalid input
         self.position += 1
