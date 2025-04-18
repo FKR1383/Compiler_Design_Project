@@ -1,4 +1,7 @@
-import re
+# Compiler Design Project || C-minus compiler || Phase 1: Scanner
+
+# Farzam Koohi Ronaghi - 401106403
+# Radin Shahdaei - 401106096
 
 class Scanner:
     def __init__(self, input_path='input.txt'):

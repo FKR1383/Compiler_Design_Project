@@ -1,3 +1,5 @@
-12.	(>, Invalid input)
-24.	(i>, Invalid input)
-25.	(/* uncl..., Unclosed comment)
+3.	(93$, Invalid number)
+5.	(#, Invalid input)
+6.	(=#, Invalid input) (#, Invalid input)
+7.	(2$, Invalid number)
+13.	(*/, Unmatched comment)
