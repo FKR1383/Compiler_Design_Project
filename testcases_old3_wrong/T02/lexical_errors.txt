@@ -1,2 +1,0 @@
-6	(1a, Invalid number)
-8	(!, Invalid input)

@@ -1,0 +1,6 @@
+1.    (KEYWORD, void) (ID, main) (SYMBOL, () (KEYWORD, void) (SYMBOL, )) (SYMBOL, {) (KEYWORD, int) (ID, a) (SYMBOL, =) (NUM, 2) (SYMBOL, ;) (KEYWORD, int) (ID, b) (SYMBOL, =) (NUM, 12) (SYMBOL, ;) (KEYWORD, if) (SYMBOL, () (SYMBOL, () (ID, a) (SYMBOL, +) (ID, b) (SYMBOL, )) (SYMBOL, *) (SYMBOL, () (SYMBOL, () (ID, a) (SYMBOL, +) (ID, b) (SYMBOL, )) (SYMBOL, /) (SYMBOL, () (ID, a) (SYMBOL, )) (SYMBOL, )) (SYMBOL, ==) (ID, a) (SYMBOL, )) (SYMBOL, {)
+2.    (KEYWORD, while) (SYMBOL, () (ID, a) (SYMBOL, +) (ID, b) (SYMBOL, ==) (SYMBOL, =) (NUM, 2) (SYMBOL, ))
+3.    (SYMBOL, {)
+4.    (ID, a) (SYMBOL, =) (ID, a) (SYMBOL, +) (ID, b) (SYMBOL, ;)
+9.    (SYMBOL, })
+13.    (SYMBOL, }) (SYMBOL, }) (SYMBOL, })

@@ -1,0 +1,13 @@
+void$$$$voi$void main(void){int a=12$2;int b=12;if((a+b)*((a+b)/(a))==a){
+while(#=#/* Hello * *  /* / */ a+b ==#=2)
+{
+    a=a+b#b;#
+    
+
+
+
+} /* GoodBye
+}
+}
+*/
+}}}

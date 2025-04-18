@@ -1,3 +1,0 @@
-17.	(i%, Invalid input) (?, Invalid input)
-37.	(>, Invalid input)
-56.	(%, Invalid input)

@@ -1,3 +1,0 @@
-12.	(>, Invalid input)
-24.	(i>, Invalid input)
-25.	(/* uncl..., Unclosed comment)
