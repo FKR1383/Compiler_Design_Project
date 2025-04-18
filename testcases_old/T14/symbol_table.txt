@@ -5,3 +5,8 @@
 5.	return
 6.	void
 7.	while
+8.	even
+9.	n
+10.	odd
+11.	main
+12.	x

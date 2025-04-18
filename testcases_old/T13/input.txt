@@ -1,0 +1,67 @@
+/* Funky C‑minus stress test with fun edge cases */
+
+/* Global variables and array */
+int g0;
+int funkyArr[6];
+
+/* Prototype */
+int weird(int x, int y);
+
+/* Main entry */
+void main(void){
+    int i;
+    int res;
+    /* Initialize funkyArr with alternating values */
+    i=0;
+    while(i<6){
+        funkyArr[i]= (i%2==0) ? i*3 : i/2 ;
+        i = i + 1;
+    }
+
+    /* Mixed arithmetic, precedence, and assignment chaining */
+    g0 = 1+2*3 - 4 / (2+1);
+    res = g0 = funkyArr[5] + funkyArr[0];
+
+    /* Nested calls and return in void */
+    weird(res, g0);
+    return; /* end of main */
+}
+
+/* A function with nested conditionals, break/continue, and tricky loops */
+int weird(int x, int y){
+    int a;
+    int b;
+    a = x;
+    b = y;
+    /* Unusual for C‑minus style: comment inside expression */
+    while(a > 0 /* keep going */){
+        if (a == b){
+            /* do nothing, just skip */
+            a = a - 1;
+            continue;
+        } else if(a < b){
+            /* break out when a smaller */
+            break;
+        } else {
+            /* multiple operations chained */
+            a = a - 2; b = b + 3;
+        }
+    }
+
+    /* Deeply nested ifs */
+    if (a == 0){
+        if (b == 0){
+            return 0;
+        } else {
+            if (b % 2 == 1){
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    } else {
+        /* else with no braces */
+        return a + b;
+    }
+}
+

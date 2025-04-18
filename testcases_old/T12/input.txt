@@ -1,0 +1,102 @@
+/* Comprehensive C‑minus test case #2 */
+
+/* Global declarations */
+int G1;
+int G2[4];
+
+/* Function prototypes */
+int max(int a, int b);
+void fill(int arr[], int size, int value);
+int search(int arr[], int size, int key);
+
+/* Main function */
+void main(void) {
+    int i;
+    int val;
+    int idx;
+    int B[4];
+
+    /* Initialize globals */
+    G1 = 10;
+    fill(G2, 4, G1);
+
+    /* Test arithmetic and comparisons */
+    val = G2[2] - G2[1] * (G2[0] + G2[3]);
+    if (val < 0) {
+        val = -val;
+    } else {
+        val = val + 1;
+    }
+
+    /* Call max function */
+    G1 = max(G2[1], G2[3]);
+
+    /* Populate local array B with alternating 0/1 pattern */
+    i = 0;
+    while (i < 4) {
+        if (i % 2 == 0) {
+            B[i] = 0;
+        } else {
+            B[i] = 1;
+        }
+        i = i + 1;
+    }
+
+    /* Search for values */
+    idx = search(B, 4, 1);
+    if (idx == -1) {
+        G2[0] = 999;
+    } else {
+        G2[0] = idx;
+    }
+
+    /* Demonstrate break and continue */
+    i = 0;
+    while (i < 7) {
+        if (i == 5) {
+            break;
+        }
+        if (i == 2) {
+            i = i + 1;
+            continue;
+        }
+        G1 = G1 + i;
+        i = i + 1;
+    }
+
+    return;
+}
+
+/* Return the greater of two integers */
+int max(int a, int b) {
+    if (a < b) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+/* Fill an array with a constant value */
+void fill(int arr[], int size, int value) {
+    int k;
+    k = 0;
+    while (k < size) {
+        arr[k] = value;
+        k = k + 1;
+    }
+    return;
+}
+
+/* Linear search: return index or -1 */
+int search(int arr[], int size, int key) {
+    int m;
+    m = 0;
+    while (m < size) {
+        if (arr[m] == key) {
+            return m;
+        }
+        m = m + 1;
+    }
+    return -1;
+}
+

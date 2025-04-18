@@ -1,0 +1,34 @@
+/* Short but challenging C‑minus test */
+
+/* Mutual recursion and tricky precedence */
+int even(int n);
+int odd(int n);
+
+void main(void) {
+    int x;
+    x = 7;
+    /* Mutual recursion: even calls odd and vice versa */
+    x = odd(x);
+    /* Combined assignment and arithmetic precedence */
+    x = x + 2 * even(x - 1) / (odd(x) + 1);
+    /* Nested conditionals without braces */
+    if (x > 10)
+        if (x % 2 == 0)
+            x = x - 3;
+        else
+            x = x + 3;
+    else
+        x = 0;
+    return;
+}
+
+int even(int n) {
+    if (n == 0) return 1;
+    return odd(n - 1);
+}
+
+int odd(int n) {
+    if (n == 0) return 0;
+    return even(n - 1);
+}
+

@@ -5,3 +5,11 @@
 5.	return
 6.	void
 7.	while
+8.	mix
+9.	a
+10.	b
+11.	c
+12.	result
+13.	main
+14.	i
+15.	A
