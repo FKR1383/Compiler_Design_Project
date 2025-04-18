@@ -1,8 +1,3 @@
-# compiler.py
-# Full Name: Farzam Koohi-Ronaghi
-# Student ID: [Insert your student number here]
-# References: Kenneth C. Louden, Compiler Construction: Principles and Practice
-
 import re
 
 class Scanner:
